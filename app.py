@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
 config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 300
+    "CACHE_DEFAULT_TIMEOUT": 900
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -57,10 +57,9 @@ def orders():
             flash('Session ID is required and must be 5 digits!')
         try:
             session = int(session)
-            print(session)
             orders = cache.get(session)
             print(orders)
-            # return render_template('orders.html', orders=orders)
+            return render_template('orders.html', orders=orders)
         except:
             flash('Session ID must be digits!')
     return render_template('orders.html')
