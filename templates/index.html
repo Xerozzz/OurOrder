@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>OurOrder</h1>
+    <h5>Enter Your Order</h5>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        <li>{{ messages[0] }}</li>
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <form method="post">
+        <label for="title">Name</label>
+        <br>
+        <input type="text" name="name"
+               placeholder="Name"
+               value="{{ request.form['name'] }}"></input>
+        <br>
+
+        <label for="content">Session ID (5 Digits)</label>
+        <br>
+        <input type="text" name="session"
+               placeholder="Session ID (5 digits)"
+               value="{{ request.form['session'] }}"></input>
+        <br>
+
+        <label for="content">Order</label>
+        <br>
+        <textarea name="order"
+                  placeholder="Order"
+                  rows="15"
+                  cols="60"
+                  >{{ request.form['order'] }}</textarea>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}
