@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
 config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 900
+    "CACHE_DEFAULT_TIMEOUT": 15000
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -20,6 +20,7 @@ def index():
         name = request.form['name']
         order = request.form['order']
         session = request.form['session']
+        price = request.form['price']
 
         # Validate form results
         if not name:
@@ -34,11 +35,10 @@ def index():
                 # Store order in cache and update
                 item = cache.get(session)
                 if item == None:
-                    item = {name: order}
-                    print(session,item)
+                    item = {name: [order, price]}
                     cache.set(session, item)
                 else:
-                    item[name] = order
+                    item[name] = [order, price]
                     cache.set(session, item)
                 flash("Order added successfully!")
                 return redirect(url_for('index'))

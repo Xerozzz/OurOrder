@@ -22,10 +22,10 @@
     </form>
     {% if orders %}
         <table>
-        <thead><tr><th>Name</th>    <th>Order</th></tr></thead>
+        <thead><tr><th>Name</th><th>Order</th><th>Price ($)</th></tr></thead>
         <tbody>
         {% for key, value in orders.items() %}
-           <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+           <tr><td>{{ key }}</td><td>{{ value[0] }}</td><td>{{ value[1] }}</td></tr>
         {% endfor %}
         </tbody>
         </table>

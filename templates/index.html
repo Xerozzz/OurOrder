@@ -33,6 +33,14 @@
                   cols="60"
                   >{{ request.form['order'] }}</textarea>
         <br>
+
+        <label for="price">Price (Optional)</label>
+        <br>
+        <input type="text" name="price"
+               placeholder="Price of Order (if any)"
+               value="{{ request.form['price'] }}"></input>
+        <br>
+        <br>
         <button type="submit">Submit</button>
     </form>
 {% endblock %}
