@@ -6,7 +6,7 @@ Setup:
     - `SECRET_KEY`
 
 ## Features
-- Add price field
+- ~~Add price field~~
 - Polish up CSS and styles
 - Allow export to Google Sheet or excel for storing purposes
 - Adding menus for popular stores
