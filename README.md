@@ -7,6 +7,7 @@ Setup:
 
 ## Features
 - ~~Add price field~~
+- Containerize Application
 - Polish up CSS and styles
 - Allow export to Google Sheet or excel for storing purposes
 - Adding menus for popular stores
