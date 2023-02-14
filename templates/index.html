@@ -29,9 +29,18 @@
         <br>
         <textarea name="order"
                   placeholder="Order"
-                  rows="15"
+                  rows="1"
                   cols="60"
                   >{{ request.form['order'] }}</textarea>
+        <br>
+
+        <label for="content">Notes (Optional)</label>
+        <br>
+        <textarea name="notes"
+                  placeholder="Notes (if any)"
+                  rows="15"
+                  cols="60"
+                  >{{ request.form['notes'] }}</textarea>
         <br>
 
         <label for="price">Price (Optional)</label>

@@ -25,6 +25,7 @@ Note: To delete youri mage, run `aws lightsail delete-container-service --servic
 - ~~Cache to auto delete, preventing old data from being saved~~
 - ~~Add price field~~
 - ~~Containerize Application~~
+- Remarks section for customizing order or other notes
 - Polish up CSS and styles
 - Allow export to Google Sheet or excel for storing purposes
 - Adding menus for popular stores

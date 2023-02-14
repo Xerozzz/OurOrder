@@ -8,7 +8,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
 config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 15000
+    "CACHE_DEFAULT_TIMEOUT": 1800
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -21,6 +21,7 @@ def index():
         order = request.form['order']
         session = request.form['session']
         price = request.form['price']
+        notes = request.form['notes']
 
         # Validate form results
         if not name:
@@ -35,11 +36,10 @@ def index():
                 # Store order in cache and update
                 item = cache.get(session)
                 if item == None:
-                    item = {name: [order, price]}
-                    cache.set(session, item)
+                    item = {name: [order, notes, price]}
                 else:
-                    item[name] = [order, price]
-                    cache.set(session, item)
+                    item[name] = [order, notes, price]
+                cache.set(session, item, timeout=1800)
                 flash("Order added successfully!")
                 return redirect(url_for('index'))
             except:
@@ -58,7 +58,8 @@ def orders():
         try:
             session = int(session)
             orders = cache.get(session)
-            print(orders)
+            if orders == None:
+                orders = 'N'
             return render_template('orders.html', orders=orders)
         except:
             flash('Session ID must be digits!')

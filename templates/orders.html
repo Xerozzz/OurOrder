@@ -21,13 +21,17 @@
         <button type="submit">Submit</button>
     </form>
     {% if orders %}
-        <table>
-        <thead><tr><th>Name</th><th>Order</th><th>Price ($)</th></tr></thead>
-        <tbody>
-        {% for key, value in orders.items() %}
-           <tr><td>{{ key }}</td><td>{{ value[0] }}</td><td>{{ value[1] }}</td></tr>
-        {% endfor %}
-        </tbody>
-        </table>
+        {% if orders == "N" %}
+            <p>This session ID is not currently in use.</p>
+        {% else %}
+                <table>
+                    <thead><tr><th>Name</th><th>Order</th><th>Notes</th><th>Price ($)</th></tr></thead>
+                    <tbody>
+                {% for key, value in orders.items() %}
+                   <tr><td>{{ key }}</td><td>{{ value[0] }}</td><td>{{ value[1] }}</td><td>{{ value[2] }}</td></tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+        {% endif %}
     {% endif %}
 {% endblock %}
