@@ -1,7 +1,8 @@
-from flask import Flask, render_template, flash, redirect, request
+from flask import Flask, render_template, flash, redirect, request, jsonify, make_response, send_file
 import os
+import io
 from flask_caching import Cache
-
+import pandas as pd
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
@@ -58,9 +59,33 @@ def orders():
         try:
             session = int(session)
             orders = cache.get(session)
+            total = 0
             if orders == None:
                 orders = 'N'
-            return render_template('orders.html', orders=orders)
+            else:
+                for key, value in orders.items():
+                    total += float(value[2])
+            return render_template('orders.html', orders=orders, total = total)
         except:
             flash('Session ID must be digits!')
     return render_template('orders.html')
+
+@app.route('/export', methods=['POST'])
+def export():
+    data = request.get_json().get('session')
+
+    # Create dataframe from data
+    df = pd.DataFrame.from_dict(data, orient='index', columns=['Order', 'Notes', 'Price'])
+    
+    # Convert the DataFrame to an Excel file in memory
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name="exportdata", index = True, header=True)
+    writer.save()
+    output.seek(0)
+
+    # Create a Flask response with the Excel file
+    response = send_file(output, as_attachment=True, mimetype='application/vnd.ms-excel', download_name="exportdata.xlsx")
+    response.headers['Content-Disposition'] = 'attachment; filename=export.xlsx'
+    response.headers['Content-Type'] = 'application/vnd.ms-excel'
+    return response

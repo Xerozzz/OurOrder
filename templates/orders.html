@@ -13,7 +13,7 @@
     <form method="post">
         <label for="title">Session ID (5 digits)</label>
         <br>
-        <input type="text" name="session"
+        <input id="session" type="text" name="session"
                placeholder="Session ID"
                value="{{ request.form['session'] }}"></input>
         <br>
@@ -32,6 +32,33 @@
                 {% endfor %}
                     </tbody>
                 </table>
+                <br>
+                <p>Total bill is <b>${{ total }}</b>. Want to export your orders? Click here: <button onclick="exportRequest({{ orders }})">EXPORT</button></p>
         {% endif %}
     {% endif %}
+    <script>
+        function exportRequest(orders) {
+            fetch('/export', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                session: orders
+              })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+              // create a temporary link element to initiate the file download
+              const url = window.URL.createObjectURL(new Blob([blob]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', 'export.xlsx');
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            })
+            .catch(error => console.error('Error exporting data:', error));
+        }
+    </script>
 {% endblock %}
