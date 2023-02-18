@@ -1,35 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>OurOrder</h1>
-    <h5>Check Your Order List</h5>
+    <h2 class="pt-3">Check Your Order List</h2>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <ul>
-        <li>{{ messages[0] }}</li>
+    <ul class="list-group">
+        {% for i in messages %}
+            <li class="list-group-item list-group-item-danger">{{ i }}</li>
+        {% endfor %}
     </ul>
     {% endif %}
     {% endwith %}
     <form method="post">
-        <label for="title">Session ID (5 digits)</label>
-        <br>
-        <input id="session" type="text" name="session"
-               placeholder="Session ID"
-               value="{{ request.form['session'] }}"></input>
-        <br>
-        <br>
-        <button type="submit">Submit</button>
+        <div class = "mb-3">
+            <label class="form-label font-weight-bold" for="title">Session ID (5 digits)</label>
+            <input class="form-control w-25" id="session" type="text" name="session"
+                   placeholder="Session ID"
+                   value="{{ request.form['session'] }}"></input>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     {% if orders %}
         {% if orders == "N" %}
             <p>This session ID is not currently in use.</p>
         {% else %}
-                <table>
-                    <thead><tr><th>Name</th><th>Order</th><th>Notes</th><th>Price ($)</th></tr></thead>
+                <table class="table table-striped table-hover table-responsive mt-5">
+                    <thead class="">
+                        <tr>
+                            <th scope = "col">Name</th>
+                            <th scope = "col">Order</th>
+                            <th scope = "col">Notes</th>
+                            <th scope = "col">Price ($)</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                {% for key, value in orders.items() %}
-                   <tr><td>{{ key }}</td><td>{{ value[0] }}</td><td>{{ value[1] }}</td><td>{{ value[2] }}</td></tr>
-                {% endfor %}
+                        {% for key, value in orders.items() %}
+                           <tr>
+                                <th scope="row">{{ key }}</th>
+                                <td>{{ value[0] }}</td>
+                                <td>{{ value[1] }}</td>
+                                <td>{{ value[2] }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 <br>

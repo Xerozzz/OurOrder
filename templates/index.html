@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>OurOrder</h1>
-    <h5>Enter Your Order</h5>
+    <h2 class="pt-3">Enter Your Order</h2>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul class="list-group">
@@ -14,21 +13,21 @@
     {% endwith %}
     <form method="post">
         <div class = "mb-3">
-            <label class="form-label" for="title">Name</label>
+            <label class="form-label font-weight-bold" for="title">Name</label>
             <input class="form-control" type="text" name="name"
                    placeholder="Name"
                    value="{{ request.form['name'] }}"></input>
         </div>
 
         <div class = "mb-3">
-            <label class="form-label" for="content">Session ID (5 Digits)</label>
+            <label class="form-label font-weight-bold" for="content">Session ID (5 Digits)</label>
             <input class="form-control" type="text" name="session"
                    placeholder="Session ID (5 digits)"
                    value="{{ request.form['session'] }}"></input>
         </div>
 
         <div class = "mb-3">
-            <label class="form-label" for="content">Order</label>
+            <label class="form-label font-weight-bold" for="content">Order</label>
             <textarea class="form-control" name="order"
                       placeholder="Order"
                       rows="1"
@@ -36,7 +35,7 @@
         </div>
 
         <div class = "mb-3">
-            <label class="form-label" for="content">Notes (Optional)</label>
+            <label class="form-label font-weight-bold" for="content">Notes (Optional)</label>
             <textarea class="form-control" name="notes"
                       placeholder="Notes (if any)"
                       rows="5"
@@ -44,7 +43,7 @@
         </div>
 
         <div class="">  
-            <label class="form-label" for="price">Price (Optional)</label>
+            <label class="form-label font-weight-bold" for="price">Price (Optional)</label>
             <div class="input-group mb-3">
                 <span class="input-group-text">$</span>
                 <input class="form-control" type="text" name="price"
