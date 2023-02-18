@@ -31,9 +31,9 @@ def index():
         # Validate form results
         if not name:
             flash('Name is required!')
-        elif not order:
+        if not order:
             flash('Order is required!')
-        elif not session or len(session) != 5 :
+        if not session or len(session) != 5 :
             flash('Session ID is required and must be 5 digits!')
         else:
             try:
