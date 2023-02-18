@@ -1,9 +1,10 @@
-from flask import Flask, render_template, flash, redirect, request, jsonify, make_response, send_file
-import os
-import io
+# Import dependencies
+from flask import Flask, url_for, render_template, flash, redirect, request, jsonify, make_response, send_file
 from flask_caching import Cache
+import os, io
 import pandas as pd
 
+# App configurations
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
 config = {
@@ -13,6 +14,9 @@ config = {
 }
 app.config.from_mapping(config)
 cache = Cache(app)
+
+# Setting Constants
+CACHE_TIMEOUT = 1800
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -40,9 +44,12 @@ def index():
                     item = {name: [order, notes, price]}
                 else:
                     item[name] = [order, notes, price]
-                cache.set(session, item, timeout=1800)
-                flash("Order added successfully!")
-                return redirect(url_for('index'))
+                try:
+                    cache.set(session, item, timeout=CACHE_TIMEOUT)
+                    flash("Order added successfully!")
+                    return redirect(url_for('index'))
+                except Exception as e:
+                    flash(f'Error adding order: {str(e)}')
             except:
                 flash('Session ID must be digits!')            
     return render_template('index.html')
@@ -72,20 +79,34 @@ def orders():
 
 @app.route('/export', methods=['POST'])
 def export():
-    data = request.get_json().get('session')
+    try:
+        data = request.get_json().get('session')
 
-    # Create dataframe from data
-    df = pd.DataFrame.from_dict(data, orient='index', columns=['Order', 'Notes', 'Price'])
-    
-    # Convert the DataFrame to an Excel file in memory
-    output = io.BytesIO()
-    writer = pd.ExcelWriter(output, engine='xlsxwriter')
-    df.to_excel(writer, sheet_name="exportdata", index = True, header=True)
-    writer.save()
-    output.seek(0)
+        # Create dataframe from data
+        df = pd.DataFrame.from_dict(data, orient='index', columns=['Order', 'Notes', 'Price'])
 
-    # Create a Flask response with the Excel file
-    response = send_file(output, as_attachment=True, mimetype='application/vnd.ms-excel', download_name="exportdata.xlsx")
-    response.headers['Content-Disposition'] = 'attachment; filename=export.xlsx'
-    response.headers['Content-Type'] = 'application/vnd.ms-excel'
-    return response
+        # Convert the DataFrame to an Excel file in memory
+        output = io.BytesIO()
+        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name="exportdata", index = True, header=True)
+        writer.save()
+        output.seek(0)
+
+        # Create a Flask response with the Excel file
+        response = send_file(output, as_attachment=True, mimetype='application/vnd.ms-excel', download_name="export.xlsx")
+        response.headers['Content-Type'] = 'application/vnd.ms-excel'
+        return response
+    except Exception as e:
+        flash(f"Error exporting data: {str(e)}")
+
+@app.route('/generate', methods=['GET'])
+def generate():
+    item = {
+        "YT": ["Potato Salad", "With extra cream", "3.00"],
+        "Keith": ["Potato Soup", "With extra eggs", "10.00"],      
+        "John": ["Ribeye Steak", "With extra sauce", "12.00"],  
+        "Alex": ["Mcchicken meal with potato pie", "Upsize, drink coke no ice", "20.00"],  
+    }
+    cache.set(11111, item, timeout=CACHE_TIMEOUT)
+    print("Test Data Generated!")
+    return redirect(url_for('orders'))
