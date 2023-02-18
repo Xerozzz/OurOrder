@@ -20,12 +20,17 @@ Deployment Steps:
 Note: To delete youri mage, run `aws lightsail delete-container-service --service-name flask-ourorder`
 
 ## Features
+### Implemented
 - ~~Consolidating of orders~~
 - ~~Session ID to sync up orders from multiple devices~~
 - ~~Cache to auto delete, preventing old data from being saved~~
 - ~~Add price field~~
 - ~~Containerize Application~~
 - ~~Remarks section for customizing order or other notes~~
-- Polish up CSS and styles
+- ~~Polish up CSS and styles~~
 - ~~Allow export to Google Sheet or excel for storing purposes~~
+
+### Future/Developing
 - Adding menus for popular stores
+- Adding Icons for fun and personalisation
+- Find a way to prevent possible clashing of session IDs
