@@ -2,11 +2,11 @@
 
 {% block content %}
     <h2 class="pt-3">Enter Your Order</h2>
-    {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <ul class="list-group">
-        {% for i in messages %}
-            <li class="list-group-item list-group-item-danger">{{ i }}</li>
+        {% for cat, i in messages %}
+            <li class="list-group-item list-group-item-{{ cat }}"> {{ i }} </li>
         {% endfor %}
     </ul>
     {% endif %}

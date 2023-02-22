@@ -1,12 +1,10 @@
 import pytest
-from ourorder import create_app
+from app import app
 
 @pytest.fixture(scope="module")
 def test_client():
-    flask_app = create_app()
-    testing_client = flask_app.test_client()
-    with flask_app.app_context():
-        yield testing_client
+    with app.test_client() as client:
+        yield client
 
 @pytest.fixture(scope="module")
 def data():

@@ -30,11 +30,11 @@ def index():
 
         # Validate form results
         if not name:
-            flash('Name is required!')
+            flash('Name is required!', 'danger')
         if not order:
-            flash('Order is required!')
+            flash('Order is required!', 'danger')
         if not session or len(session) != 5 :
-            flash('Session ID is required and must be 5 digits!')
+            flash('Session ID is required and must be 5 digits!', 'danger')
         else:
             try:
                 session = int(session)
@@ -46,12 +46,12 @@ def index():
                     item[name] = [order, notes, price]
                 try:
                     cache.set(session, item, timeout=CACHE_TIMEOUT)
-                    flash("Order added successfully!")
+                    flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
                 except Exception as e:
-                    flash(f'Error adding order: {str(e)}')
+                    flash(f'Error adding order: {str(e)}', 'danger')
             except:
-                flash('Session ID must be digits!')            
+                flash('Session ID must be digits!', 'danger')            
     return render_template('index.html')
 
 @app.route('/orders', methods=['GET', 'POST'])
@@ -63,6 +63,7 @@ def orders():
         # Validate results
         if not session or len(session) != 5 :
             flash('Session ID is required and must be 5 digits!')
+            return render_template('orders.html', orders=None, total = 0)
         try:
             session = int(session)
             orders = cache.get(session)
@@ -80,16 +81,14 @@ def orders():
 @app.route('/export', methods=['POST'])
 def export():
     try:
-        data = request.get_json().get('session')
-
+        data = request.get_json().get('orders')
         # Create dataframe from data
         df = pd.DataFrame.from_dict(data, orient='index', columns=['Order', 'Notes', 'Price'])
 
         # Convert the DataFrame to an Excel file in memory
         output = io.BytesIO()
-        writer = pd.ExcelWriter(output, engine='xlsxwriter')
-        df.to_excel(writer, sheet_name="exportdata", index = True, header=True)
-        writer.save()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, sheet_name="exportdata", index=True, header=True)
         output.seek(0)
 
         # Create a Flask response with the Excel file
@@ -97,7 +96,7 @@ def export():
         response.headers['Content-Type'] = 'application/vnd.ms-excel'
         return response
     except Exception as e:
-        flash(f"Error exporting data: {str(e)}")
+        return(f"Error exporting data: {str(e)}")
 
 @app.route('/generate', methods=['GET'])
 def generate():
