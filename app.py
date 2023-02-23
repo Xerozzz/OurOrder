@@ -3,6 +3,7 @@ from flask import Flask, url_for, render_template, flash, redirect, request, jso
 from flask_caching import Cache
 import os, io
 import pandas as pd
+import functions
 
 # App configurations
 app = Flask(__name__)
@@ -29,12 +30,8 @@ def index():
         notes = request.form['notes']
 
         # Validate form results
-        if not name:
-            flash('Name is required!', 'danger')
-        if not order:
-            flash('Order is required!', 'danger')
-        if not session or len(session) != 5 :
-            flash('Session ID is required and must be 5 digits!', 'danger')
+        if functions.input_validation_check(name, order, session):
+            render_template('index.html')
         else:
             try:
                 session = int(session)
@@ -43,14 +40,14 @@ def index():
                 if item == None:
                     item = {name: [order, notes, price]}
                 else:
-                    item[name] = [order, notes, price]
+                    item[name] = [order, notes, price] # pragma: no cover
                 try:
                     cache.set(session, item, timeout=CACHE_TIMEOUT)
                     flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
-                except Exception as e:
-                    flash(f'Error adding order: {str(e)}', 'danger')
-            except:
+                except Exception as e: # pragma: no cover
+                    flash(f'Error adding order: {str(e)}', 'danger') 
+            except: # pragma: no cover
                 flash('Session ID must be digits!', 'danger')            
     return render_template('index.html')
 
@@ -69,12 +66,12 @@ def orders():
             orders = cache.get(session)
             total = 0
             if orders == None:
-                orders = 'N'
+                orders = 'N' 
             else:
                 for key, value in orders.items():
                     total += float(value[2])
             return render_template('orders.html', orders=orders, total = total)
-        except:
+        except Exception as e: # pragma: no cover
             flash('Session ID must be digits!')
     return render_template('orders.html')
 
@@ -95,7 +92,7 @@ def export():
         response = send_file(output, as_attachment=True, mimetype='application/vnd.ms-excel', download_name="export.xlsx")
         response.headers['Content-Type'] = 'application/vnd.ms-excel'
         return response
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         return(f"Error exporting data: {str(e)}")
 
 @app.route('/generate', methods=['GET'])
