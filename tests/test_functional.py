@@ -12,9 +12,9 @@ def test_getIndex(test_client, data):
     assert b'OurOrder' in response.data
     assert b'Enter Your Order' in response.data    
 
-def test_postIndex(test_client, data):
+def test_postSuccessIndex(test_client, data):
     """
-    Index Page POST Request
+    Index Page POST Request SUCCESS
     """
     info = {
         'name': 'John',
@@ -27,6 +27,27 @@ def test_postIndex(test_client, data):
     assert response.status_code == 200
     assert b'OurOrder' in response.data
     assert b'Enter Your Order' in response.data  
+
+def test_postFailIndex(test_client, data):
+    """
+    Index Page POST Request FAIL
+    """
+    info = {
+        'name': "",
+        'order': "",
+        'session': "",
+        'price': 12.00,
+        'notes': 'With extra sauce'
+    }
+    response = test_client.post('/', data=info, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'OurOrder' in response.data
+    assert b'Enter Your Order' in response.data 
+    assert b'Name is required' in response.data 
+    assert b'Session is required' in response.data 
+    assert b'Order is required' in response.data 
+    assert b'5 digits' in response.data 
+
 
 # ---------------------
 # ORDER PAGE REQUESTS
@@ -41,9 +62,23 @@ def test_getOrders(test_client, data):
     assert b'Check' in response.data    
     assert b'Session ID' in response.data
 
-def test_postOrders(test_client, data):
+def test_postNoOrders(test_client, data):
     """
-    Orders Page POST Request
+    Orders Page POST Request NO Order
+    """
+    info = {
+        'session': 11112,
+    }
+    response = test_client.post('/orders', data=info, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'OurOrder' in response.data
+    assert b'Check' in response.data    
+    assert b'Session ID' in response.data
+    assert b'not currently in use' in response.data
+
+def test_postSuccessOrders(test_client, data):
+    """
+    Orders Page POST Request SUCCESS
     """
     info = {
         'session': 11111,
@@ -53,7 +88,20 @@ def test_postOrders(test_client, data):
     assert b'OurOrder' in response.data
     assert b'Check' in response.data    
     assert b'Session ID' in response.data
-    assert b'Total bill'
+    assert b'Total bill' in response.data
+
+def test_postFailOrders(test_client, data):
+    """
+    Orders Page POST Request FAIL
+    """
+    info = {
+        'session': "",
+    }
+    response = test_client.post('/orders', data=info, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'OurOrder' in response.data
+    assert b'Check' in response.data    
+    assert b'Session ID is required and must be 5 digits!' in response.data
 
 # ---------------------
 # GENERATE PAGE REQUESTS
