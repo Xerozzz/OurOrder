@@ -43,17 +43,18 @@ Note: To delete your image, run `aws lightsail delete-container-service --servic
 
 ## Features
 ### Implemented
-- ~~Consolidating of orders~~
-- ~~Session ID to sync up orders from multiple devices~~
-- ~~Cache to auto delete, preventing old data from being saved~~
-- ~~Add price field~~
-- ~~Containerize Application~~
-- ~~Remarks section for customizing order or other notes~~
-- ~~Polish up CSS and styles~~
-- ~~Allow export to Google Sheet or excel for storing purposes~~
-- ~~Functional and Unit Tests~~
+- Consolidating of orders
+- Session ID to sync up orders from multiple devices
+- Cache to auto delete, preventing old data from being saved
+- Add price field
+- Containerize Application
+- Remarks section for customizing order or other notes
+- Polish up CSS and styles
+- Allow export to Google Sheet or excel for storing purposes
+- Functional and Unit Tests
 
 ### Future/Developing
+- Automate full deployment into the cloud using Terraform and DevOps Pipeline
 - Adding menus for popular stores
 - Adding Icons for fun and personalisation
 - Find a way to prevent possible clashing of session IDs
