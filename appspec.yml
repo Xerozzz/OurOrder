@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ec2-user/flask
+    destination: /
 file_exists_behavior: OVERWRITE
 hooks:
   AfterInstall:
