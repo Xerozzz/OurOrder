@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /
+  - source: \
+    destination: /home/ec2-user/flask
 hooks:
   BeforeInstall:
     - location: install_dependencies
