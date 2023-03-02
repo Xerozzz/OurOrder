@@ -1,4 +1,5 @@
 #!/bin/bash
 cd /home/ec2-user/flask
+ls
 python3 -m pip install -r requirements.txt
 python3 -m flask run 
