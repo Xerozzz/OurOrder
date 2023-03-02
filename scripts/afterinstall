@@ -1,4 +1,3 @@
 #!/bin/bash
-cd flask
 python3.10 -m pip install -r requirements.txt
-python3.10 -m flask run 
+nohup sudo python3.10 flask run &

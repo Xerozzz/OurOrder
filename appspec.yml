@@ -5,7 +5,12 @@ files:
     destination: /
 file_exists_behavior: OVERWRITE
 hooks:
-  AfterInstall:
-    - location: install_dependencies
+  BeforeInstall:
+    - location: scripts/install_dependencies
       timeout: 300
       runas: root
+  AfterInstall:
+    - location: scripts/afterinstall
+      timeout: 300
+      runas: root
+  
