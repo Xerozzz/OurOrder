@@ -1,4 +1,4 @@
 #!/bin/bash
 cd flask
-python3 -m pip install -r /home/ec2-user/flask/requirements.txt
-python3 -m flask run 
+python3.10 -m pip install -r /home/ec2-user/flask/requirements.txt
+python3.10 -m flask run 
