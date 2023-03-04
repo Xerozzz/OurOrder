@@ -19,8 +19,12 @@ cache = Cache(app)
 # Setting Constants
 CACHE_TIMEOUT = 1800
 
+# Index Route
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    '''
+    INDEX Route. Allows GET requests and POST request to submit orders
+    '''
     if request.method == 'POST':
         # Obtain form results
         name = request.form['name']
@@ -51,8 +55,12 @@ def index():
                 flash('Session ID must be digits!', 'danger')            
     return render_template('index.html')
 
+# Orders Route
 @app.route('/orders', methods=['GET', 'POST'])
 def orders():
+    '''
+    ORDERS Route. Allows GET requests and POST request to check orders and export to excel
+    '''
     if request.method == 'POST':
         # Obtain results from form
         session = request.form['session']
@@ -75,8 +83,13 @@ def orders():
             flash('Session ID must be digits!')
     return render_template('orders.html')
 
+
+# Export Route
 @app.route('/export', methods=['POST'])
 def export():
+    '''
+    EXPORT Route. Allows POST request only to generate orders in excel format
+    '''
     try:
         data = request.get_json().get('orders')
         # Create dataframe from data
@@ -95,8 +108,12 @@ def export():
     except Exception as e: # pragma: no cover
         return(f"Error exporting data: {str(e)}")
 
+# Generate Route
 @app.route('/generate', methods=['GET'])
 def generate():
+    '''
+    GENERATE Route. Allows GET requests only, temp route to generate test data
+    '''
     item = {
         "YT": ["Potato Salad", "With extra cream", "3.00"],
         "Keith": ["Potato Soup", "With extra eggs", "10.00"],      

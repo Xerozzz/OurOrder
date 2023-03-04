@@ -1,5 +1,6 @@
 from flask import Flask, url_for, render_template, flash, redirect, request, jsonify, make_response, send_file
 
+# For validating order inputs
 def input_validation_check(name, order, session):
     ret = False
     values = {

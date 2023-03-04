@@ -1,4 +1,5 @@
 #!/bin/bash
+# Creating .env file, need to find a better way to improve this
 cat <<EOT >> .env
 FLASK_DEBUG=0
 FLASK_APP=app
@@ -6,5 +7,5 @@ SECRET_KEY="test"
 FLASK_RUN_PORT=5000
 FLASK_RUN_HOST= 0.0.0.0
 EOT
-python3.10 -m pip install -r requirements.txt
-nohup flask run &
+python3.10 -m pip install -r requirements.txt # Installing Python requirements and dependencies
+nohup flask run & # To run the application
