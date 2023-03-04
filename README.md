@@ -27,6 +27,8 @@ Simple to develop, convenient to maintain and easy to use
 Note: If you don't have lightsailctl, then you will need to deploy it as a container with different steps from below, or not use containers.
 
 ## Deployment Steps:
+### As a AWS LightSail or Docker Container
+Note: All files are under "Lightsail Containers Scripts" Folder. Edit the commands as necessary or drag the files into the main directory.
 1. Setup a virtualenv and run `pip install -r requirements.txt`
 2. Set .env variables under `.env_sample` and rename it to `.env`
     <br>Optional: Run `python -m pytest -v --setup-show --cov=app --cov-report term-missing` to test the code.
@@ -41,20 +43,28 @@ Note: If you don't have lightsailctl, then you will need to deploy it as a conta
 
 Note: To delete your image, run `aws lightsail delete-container-service --service-name flask-ourorder`
 
+### CI/CD Pipeline using CodeDeploy, LightSail and CodePipeline
+1. To be added
+
 ## Features
+### Bugs
+- Session IDs not working on orders page if sent by 2 diff devices
+
 ### Implemented
 - Consolidating of orders
 - Session ID to sync up orders from multiple devices
 - Cache to auto delete, preventing old data from being saved
 - Add price field
-- Containerize Application
 - Remarks section for customizing order or other notes
 - Polish up CSS and styles
 - Allow export to Google Sheet or excel for storing purposes
 - Functional and Unit Tests
+- Deployment as Container in AWS Lightsail or Docker
+- Deployment with fully CI/CD Pipeline using CodeDeploy, CodePipeline and Lightsail
 
 ### Future/Developing
-- Automate full deployment into the cloud using Terraform and DevOps Pipeline
+- Automate full CI/CD deployment into the cloud using Terraform
+- Creating a safer way to port .env into CodePipeline
 - Adding menus for popular stores
 - Adding Icons for fun and personalisation
 - Find a way to prevent possible clashing of session IDs
