@@ -64,6 +64,7 @@ Note: To delete your image, run `aws lightsail delete-container-service --servic
 
 ### Future/Developing
 - Automate full CI/CD deployment into the cloud using Terraform
+- Creating continuous documentation
 - Creating a safer way to port .env into CodePipeline
 - Adding menus for popular stores
 - Adding Icons for fun and personalisation
