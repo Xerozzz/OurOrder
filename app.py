@@ -10,8 +10,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'SET A KEY'
 config = {
     "DEBUG": True,          # some Flask specific configs
-    "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 1800
+    "CACHE_TYPE": "flask_caching.backends.RedisCache",  # Selecting REDIS as server
+    "CACHE_KEY_PREFIX": "ourorder",
+    "CACHE_REDIS_HOST": "localhost",
+    "cache_redis_port": 6379,
+    "CACHE_REDIS_URL": "redis://localhost:6379"
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -38,7 +41,7 @@ def index():
             render_template('index.html')
         else:
             try:
-                session = int(session)
+                session = session
                 # Store order in cache and update
                 item = cache.get(session)
                 if item == None:
@@ -50,7 +53,8 @@ def index():
                     flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
                 except Exception as e: # pragma: no cover
-                    flash(f'Error adding order: {str(e)}', 'danger') 
+                    flash(f'Error adding order: {str(e)}', 'danger')
+                    print(e)
             except: # pragma: no cover
                 flash('Session ID must be digits!', 'danger')            
     return render_template('index.html')
@@ -67,20 +71,24 @@ def orders():
 
         # Validate results
         if not session or len(session) != 5 :
-            flash('Session ID is required and must be 5 digits!')
+            flash('Session ID is required and must be 5 digits!', 'danger')
             return render_template('orders.html', orders=None, total = 0)
         try:
-            session = int(session)
+            session = session
             orders = cache.get(session)
             total = 0
             if orders == None:
                 orders = 'N' 
             else:
-                for key, value in orders.items():
-                    total += float(value[2])
+                try:
+                    for key, value in orders.items():
+                        total += float(value[2])
+                except:
+                    flash('No total price due to invalid or None price input! (This is not an error)', 'danger')
             return render_template('orders.html', orders=orders, total = total)
         except Exception as e: # pragma: no cover
             flash('Session ID must be digits!')
+            print(e)
     return render_template('orders.html')
 
 
@@ -120,6 +128,6 @@ def generate():
         "John": ["Ribeye Steak", "With extra sauce", "12.00"],  
         "Alex": ["Mcchicken meal with potato pie", "Upsize, drink coke no ice", "20.00"],  
     }
-    cache.set(11111, item, timeout=CACHE_TIMEOUT)
+    cache.set("11111", item, timeout=CACHE_TIMEOUT)
     print("Test Data Generated!")
     return redirect(url_for('orders'))
