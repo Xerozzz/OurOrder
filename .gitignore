@@ -152,6 +152,3 @@ cython_debug/
 #.idea/
 containers.json
 deployment steps
-
-.terraform*
-terraform*
