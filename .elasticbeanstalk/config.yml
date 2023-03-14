@@ -2,6 +2,8 @@ branch-defaults:
   Terraform:
     environment: OurOrder-dev
     group_suffix: null
+  main:
+    environment: null
 global:
   application_name: OurOrder
   branch: null
