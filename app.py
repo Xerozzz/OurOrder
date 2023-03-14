@@ -12,9 +12,7 @@ config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "flask_caching.backends.RedisCache",  # Selecting REDIS as server
     "CACHE_KEY_PREFIX": "ourorder",
-    "CACHE_REDIS_HOST": "localhost",
-    "cache_redis_port": 6379,
-    "CACHE_REDIS_URL": "redis://localhost:6379"
+    "CACHE_REDIS_URL": "redis://default:ourorder@redis-12227.c295.ap-southeast-1-1.ec2.cloud.redislabs.com:12227"
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -131,3 +129,6 @@ def generate():
     cache.set("11111", item, timeout=CACHE_TIMEOUT)
     print("Test Data Generated!")
     return redirect(url_for('orders'))
+
+if __name__ == '__main__':
+    app.run()
