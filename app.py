@@ -131,3 +131,6 @@ def generate():
     cache.set("11111", item, timeout=CACHE_TIMEOUT)
     print("Test Data Generated!")
     return redirect(url_for('orders'))
+
+if __name__ == '__main__':
+    app.run()
