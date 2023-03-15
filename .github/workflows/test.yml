@@ -1,4 +1,4 @@
-yaml
+---
 name: OurOrder CI
 on:
   commit:
