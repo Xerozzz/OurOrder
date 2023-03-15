@@ -1,7 +1,7 @@
 yaml
 name: OurOrder CI
 on:
-  push:
+  commit:
     branches:
       - main
   pull_request:
