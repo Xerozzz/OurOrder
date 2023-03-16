@@ -1,7 +1,8 @@
 # Import dependencies
 from flask import Flask, url_for, render_template, flash, redirect, request, jsonify, make_response, send_file
 from flask_caching import Cache
-import os, io
+import os
+import io
 import pandas as pd
 import functions
 
@@ -21,6 +22,8 @@ cache = Cache(app)
 CACHE_TIMEOUT = 1800
 
 # Index Route
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     '''
@@ -42,22 +45,24 @@ def index():
                 session = session
                 # Store order in cache and update
                 item = cache.get(session)
-                if item == None:
+                if item is None:
                     item = {name: [order, notes, price]}
                 else:
-                    item[name] = [order, notes, price] # pragma: no cover
+                    item[name] = [order, notes, price]  # pragma: no cover
                 try:
                     cache.set(session, item, timeout=CACHE_TIMEOUT)
                     flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
-                except Exception as e: # pragma: no cover
+                except Exception as e:  # pragma: no cover
                     flash(f'Error adding order: {str(e)}', 'danger')
                     print(e)
-            except: # pragma: no cover
-                flash('Session ID must be digits!', 'danger')            
+            except BaseException:  # pragma: no cover
+                flash('Session ID must be digits!', 'danger')
     return render_template('index.html')
 
 # Orders Route
+
+
 @app.route('/orders', methods=['GET', 'POST'])
 def orders():
     '''
@@ -68,23 +73,25 @@ def orders():
         session = request.form['session']
 
         # Validate results
-        if not session or len(session) != 5 :
+        if not session or len(session) != 5:
             flash('Session ID is required and must be 5 digits!', 'danger')
-            return render_template('orders.html', orders=None, total = 0)
+            return render_template('orders.html', orders=None, total=0)
         try:
             session = session
             orders = cache.get(session)
             total = 0
-            if orders == None:
-                orders = 'N' 
+            if orders is None:
+                orders = 'N'
             else:
                 try:
                     for key, value in orders.items():
                         total += float(value[2])
-                except:
-                    flash('No total price due to invalid or None price input! (This is not an error)', 'danger')
-            return render_template('orders.html', orders=orders, total = total)
-        except Exception as e: # pragma: no cover
+                except BaseException:
+                    flash(
+                        'No total price due to invalid or None price input! (This is not an error)',
+                        'danger')
+            return render_template('orders.html', orders=orders, total=total)
+        except Exception as e:  # pragma: no cover
             flash('Session ID must be digits!')
             print(e)
     return render_template('orders.html')
@@ -99,22 +106,34 @@ def export():
     try:
         data = request.get_json().get('orders')
         # Create dataframe from data
-        df = pd.DataFrame.from_dict(data, orient='index', columns=['Order', 'Notes', 'Price'])
+        df = pd.DataFrame.from_dict(
+            data, orient='index', columns=[
+                'Order', 'Notes', 'Price'])
 
         # Convert the DataFrame to an Excel file in memory
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            df.to_excel(writer, sheet_name="exportdata", index=True, header=True)
+            df.to_excel(
+                writer,
+                sheet_name="exportdata",
+                index=True,
+                header=True)
         output.seek(0)
 
         # Create a Flask response with the Excel file
-        response = send_file(output, as_attachment=True, mimetype='application/vnd.ms-excel', download_name="export.xlsx")
+        response = send_file(
+            output,
+            as_attachment=True,
+            mimetype='application/vnd.ms-excel',
+            download_name="export.xlsx")
         response.headers['Content-Type'] = 'application/vnd.ms-excel'
         return response
-    except Exception as e: # pragma: no cover
-        return(f"Error exporting data: {str(e)}")
+    except Exception as e:  # pragma: no cover
+        return (f"Error exporting data: {str(e)}")
 
 # Generate Route
+
+
 @app.route('/generate', methods=['GET'])
 def generate():
     '''
@@ -122,13 +141,14 @@ def generate():
     '''
     item = {
         "YT": ["Potato Salad", "With extra cream", "3.00"],
-        "Keith": ["Potato Soup", "With extra eggs", "10.00"],      
-        "John": ["Ribeye Steak", "With extra sauce", "12.00"],  
-        "Alex": ["Mcchicken meal with potato pie", "Upsize, drink coke no ice", "20.00"],  
+        "Keith": ["Potato Soup", "With extra eggs", "10.00"],
+        "John": ["Ribeye Steak", "With extra sauce", "12.00"],
+        "Alex": ["Mcchicken meal with potato pie", "Upsize, drink coke no ice", "20.00"],
     }
     cache.set("11111", item, timeout=CACHE_TIMEOUT)
     print("Test Data Generated!")
     return redirect(url_for('orders'))
+
 
 if __name__ == '__main__':
     app.run()
