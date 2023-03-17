@@ -74,7 +74,7 @@ def orders():
         session = request.form['session']
 
         # Validate results
-        if not session or len(session) != 5 or session.isdigit() == False:
+        if not session or len(session) != 5 or session.isdigit() is False:
             flash('Session ID is required and must be 5 digits!', 'danger')
             return render_template('orders.html', orders=None, total=0)
         try:
@@ -130,8 +130,8 @@ def export():
         response.headers['Content-Type'] = 'application/vnd.ms-excel'
         return response
     except Exception as error:  # pylint: disable=broad-except # pragma: no cover
-        return f"Error exporting data: {str(error)}"
         print(error)
+        return f"Error exporting data: {str(error)}"
 
 # Generate Route
 

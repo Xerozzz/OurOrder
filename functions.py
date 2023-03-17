@@ -17,9 +17,10 @@ def input_validation_check(name, order, session):
             if not value:
                 flash(f'{key} is required!', 'danger')
                 ret = True
-        if len(session) != 5 or session.isdigit() == False:
+        if len(session) != 5 or session.isdigit() is False:
             flash('Session ID is must be 5 digits!', 'danger')
             ret = True
         return ret
-    except Exception as error:
-        print("Yeet",error)
+    except Exception as error: # pylint: disable=broad-except
+        print(error)
+        return error
