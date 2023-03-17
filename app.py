@@ -1,8 +1,9 @@
+'''Main Application Code'''
 # Import dependencies
-from flask import Flask, url_for, render_template, flash, redirect, request, jsonify, make_response, send_file
-from flask_caching import Cache
 import os
 import io
+from flask import Flask, url_for, render_template, flash, redirect, request, send_file
+from flask_caching import Cache
 import pandas as pd
 import functions
 
@@ -13,7 +14,7 @@ config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "flask_caching.backends.RedisCache",  # Selecting REDIS as server
     "CACHE_KEY_PREFIX": "ourorder",
-    "CACHE_REDIS_URL": "redis://default:ourorder@redis-12227.c295.ap-southeast-1-1.ec2.cloud.redislabs.com:12227"
+    "CACHE_REDIS_URL": os.environ.get("REDIS_URL")
 }
 app.config.from_mapping(config)
 cache = Cache(app)
@@ -42,7 +43,6 @@ def index():
             render_template('index.html')
         else:
             try:
-                session = session
                 # Store order in cache and update
                 item = cache.get(session)
                 if item is None:
@@ -53,11 +53,12 @@ def index():
                     cache.set(session, item, timeout=CACHE_TIMEOUT)
                     flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
-                except Exception as e:  # pragma: no cover
-                    flash(f'Error adding order: {str(e)}', 'danger')
-                    print(e)
-            except BaseException:  # pragma: no cover
+                except Exception as error:  # pylint: disable=broad-except # pragma: no cover
+                    print(error)
+                    flash(f'Error adding order: {str(error)}', 'danger')
+            except Exception as error:  # pylint: disable=broad-except # pragma: no cover
                 flash('Session ID must be digits!', 'danger')
+                print(error)
     return render_template('index.html')
 
 # Orders Route
@@ -73,27 +74,27 @@ def orders():
         session = request.form['session']
 
         # Validate results
-        if not session or len(session) != 5:
+        if not session or len(session) != 5 or session.isdigit() is False:
             flash('Session ID is required and must be 5 digits!', 'danger')
             return render_template('orders.html', orders=None, total=0)
         try:
-            session = session
-            orders = cache.get(session)
+            order = cache.get(session)
             total = 0
-            if orders is None:
-                orders = 'N'
+            if order is None:
+                order = 'N'
             else:
                 try:
-                    for key, value in orders.items():
+                    for value in order.values():
                         total += float(value[2])
-                except BaseException:
+                except Exception as error: # pylint: disable=broad-except
+                    print(error)
                     flash(
                         'No total price due to invalid or None price input! (This is not an error)',
                         'danger')
-            return render_template('orders.html', orders=orders, total=total)
-        except Exception as e:  # pragma: no cover
+            return render_template('orders.html', orders=order, total=total)
+        except Exception as error:  # pylint: disable=broad-except # pragma: no cover
             flash('Session ID must be digits!')
-            print(e)
+            print(error)
     return render_template('orders.html')
 
 
@@ -106,14 +107,14 @@ def export():
     try:
         data = request.get_json().get('orders')
         # Create dataframe from data
-        df = pd.DataFrame.from_dict(
+        data_frame = pd.DataFrame.from_dict(
             data, orient='index', columns=[
                 'Order', 'Notes', 'Price'])
 
         # Convert the DataFrame to an Excel file in memory
         output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-            df.to_excel(
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer: # pylint: disable=abstract-class-instantiated
+            data_frame.to_excel(
                 writer,
                 sheet_name="exportdata",
                 index=True,
@@ -128,8 +129,9 @@ def export():
             download_name="export.xlsx")
         response.headers['Content-Type'] = 'application/vnd.ms-excel'
         return response
-    except Exception as e:  # pragma: no cover
-        return (f"Error exporting data: {str(e)}")
+    except Exception as error:  # pylint: disable=broad-except # pragma: no cover
+        print(error)
+        return f"Error exporting data: {str(error)}"
 
 # Generate Route
 
