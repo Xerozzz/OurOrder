@@ -1,9 +1,11 @@
-from flask import Flask, url_for, render_template, flash, redirect, request, jsonify, make_response, send_file
-
-# For validating order inputs
-
+'''Functions Code'''
+from flask import flash
 
 def input_validation_check(name, order, session):
+    """
+    Validating orders input, to ensure name, 
+    order and session are input and within correct parameters
+    """
     ret = False
     values = {
         "Name": name,
