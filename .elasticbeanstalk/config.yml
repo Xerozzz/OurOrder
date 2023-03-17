@@ -1,11 +1,9 @@
 branch-defaults:
-  Terraform:
-    environment: OurOrder-dev
-    group_suffix: null
   main:
     environment: null
+    group_suffix: null
 global:
-  application_name: OurOrder
+  application_name: OurOrder2
   branch: null
   default_ec2_keyname: aws-eb
   default_platform: Python 3.8 running on 64bit Amazon Linux 2
