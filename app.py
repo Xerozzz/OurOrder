@@ -54,9 +54,11 @@ def index():
                     flash("Order added successfully!", 'success')
                     return redirect(url_for('index'))
                 except Exception as error:  # pylint: disable=broad-except # pragma: no cover
+                    print(error)
                     flash(f'Error adding order: {str(error)}', 'danger')
-            except Exception:  # pylint: disable=broad-except # pragma: no cover
+            except Exception as error:  # pylint: disable=broad-except # pragma: no cover
                 flash('Session ID must be digits!', 'danger')
+                print(error)
     return render_template('index.html')
 
 # Orders Route
@@ -72,7 +74,7 @@ def orders():
         session = request.form['session']
 
         # Validate results
-        if not session or len(session) != 5:
+        if not session or len(session) != 5 or session.isdigit() == False:
             flash('Session ID is required and must be 5 digits!', 'danger')
             return render_template('orders.html', orders=None, total=0)
         try:
@@ -84,13 +86,15 @@ def orders():
                 try:
                     for value in order.values():
                         total += float(value[2])
-                except Exception: # pylint: disable=broad-except
+                except Exception as error: # pylint: disable=broad-except
+                    print(error)
                     flash(
                         'No total price due to invalid or None price input! (This is not an error)',
                         'danger')
-            return render_template('orders.html', order=order, total=total)
-        except Exception:  # pylint: disable=broad-except # pragma: no cover
+            return render_template('orders.html', orders=order, total=total)
+        except Exception as error:  # pylint: disable=broad-except # pragma: no cover
             flash('Session ID must be digits!')
+            print(error)
     return render_template('orders.html')
 
 
@@ -127,6 +131,7 @@ def export():
         return response
     except Exception as error:  # pylint: disable=broad-except # pragma: no cover
         return f"Error exporting data: {str(error)}"
+        print(error)
 
 # Generate Route
 
