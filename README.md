@@ -1,11 +1,11 @@
 # OurOrder
 A group order application that allows multiple people to easily compile and consolidate individual orders at a restaurant or eatery.
 
-Uses a cache and session ID system to sync up orders from multiple devices and individuals easily. Allows input of information like order name, price, any special requirements etc. Also allows you to export everyones orders into an Excel sheet for storage or saving.
+Uses a Redis cache and session ID system to sync up orders from multiple devices and individuals easily. Allows input of information like order name, price, any special requirements etc. Also allows you to export everyones orders into an Excel sheet for storage or saving.
 
 Orders are cleared after 1800 seconds.
 
-Application runs on Python Flask and can be containerised to run on Amazon LightSail Containers or Docker.
+Application runs on Python Flask and can be containerised to run on Amazon LightSail Containers or Docker, or deployed as an Elastic Beanstalk application.
 
 ## Problem
 Sometimes when we go to restaurants, you are required to make your order at the counter. 
@@ -17,21 +17,41 @@ Furthermore, when it comes time to split the bill, we may forget who ordered wha
 OurOrder solves that problem by allowing people to easily access and consolidate orders
 
 ## Principle
-Simple to develop, convenient to maintain and easy to use
+Simple to develop, easy to maintain and convenient to use
 
 ## Prerequisites:
-- Docker
 - Python (3.8+ recommended)
-- Lightsailctl
-
-Note: If you don't have lightsailctl, then you will need to deploy it as a container with different steps from below, or not use containers.
+- AWS CLI (and configured credentials using `aws configure`)
+### Deployment Requirements
+- Docker and Lightsailctl
+<br>OR
+- EB CLI (Elastic Beanstalk CLI)
 
 ## Deployment Steps:
-### As a AWS LightSail or Docker Container
-Note: All files are under "Lightsail Containers Scripts" Folder. Edit the commands as necessary or drag the files into the main directory.
+
+### Setup
 1. Setup a virtualenv and run `pip install -r requirements.txt`
 2. Set .env variables under `.env_sample` and rename it to `.env`
-    <br>Optional: Run `python -m pytest -v --setup-show --cov=app --cov-report term-missing` to test the code.
+
+### Testing and Linting
+- `autopep8 --recursive --in-place --aggressive --aggressive app.py`
+- `autopep8 --recursive --in-place --aggressive --aggressive functions.py`
+- `pylint *.py`
+- `pytest` (3 tests will fail if you do not have a local running Redis instance)
+
+### As an Elastic Beanstalk Application using GitHub
+3. Run `eb init` in the root directory
+4. Run `eb create` to create your EB environment
+5. Run `eb deploy` to deploy your application (also run this command when new changes are pushed to the repo)
+
+Other commands:
+
+- `eb status` - Used to check status of your deployment  
+- `eb open` - Opens your application URL
+- `eb console` - Opens your application in the AWS Console
+
+### As a AWS LightSail or Docker Container (Old method)
+Note: All files are under "Lightsail Containers Scripts" Folder. Edit the commands as necessary or drag the files into the main directory.
 
 3. Run `docker build -t flask-docker .`
 4. Run `docker run -p 5000:5000 flask-docker`, you can also run `flask run` first to confirm it is working 
@@ -40,15 +60,10 @@ Note: All files are under "Lightsail Containers Scripts" Folder. Edit the comman
 7. Run `aws lightsail create-container-service-deployment --service-name flask-ourorder --containers file://containers.json --public-endpoint file://public-endpoint.json`
 8. Run `aws lightsail get-container-services --service-name flask-ourorder`
 
-
 Note: To delete your image, run `aws lightsail delete-container-service --service-name flask-ourorder`
 
-### CI/CD Pipeline using CodeDeploy, LightSail and CodePipeline
-1. To be added
-
 ## Features
-### Bugs
-- Session IDs not working on orders page if sent by 2 diff devices
+### Open Bugs
 
 ### Implemented
 - Consolidating of orders
@@ -60,14 +75,9 @@ Note: To delete your image, run `aws lightsail delete-container-service --servic
 - Allow export to Google Sheet or excel for storing purposes
 - Functional and Unit Tests
 - Deployment as Container in AWS Lightsail or Docker
-- Deployment with fully CI/CD Pipeline using CodeDeploy, CodePipeline and Lightsail
+- Creating continuous documentation and deployment on Elastic Beanstalk
 
 ### Future/Developing
-- Automate full CI/CD deployment into the cloud using Terraform
-- Creating continuous documentation
 - Using Selenium to do end-to-end testing
-- Unit tests for individual functions
-- Creating a safer way to port .env into CodePipeline
 - Adding menus for popular stores
 - Adding Icons for fun and personalisation
-- Find a way to prevent possible clashing of session IDs
