@@ -34,11 +34,13 @@ Simple to develop, easy to maintain and convenient to use
 2. Set .env variables under `.env_sample` and rename it to `.env`
 
 ### Testing and Linting
-- `autopep8 --recursive --in-place --aggressive --aggressive app.py`
-- `autopep8 --recursive --in-place --aggressive --aggressive functions.py`
-- `pylint *.py`
-- `pytest` (3 tests will fail if you do not have a local running Redis instance)
-
+```
+autopep8 --recursive --in-place --aggressive --aggressive app.py
+autopep8 --recursive --in-place --aggressive --aggressive functions.py
+pylint *.py
+pytest 
+```
+Note: Pytest will result in 3 tests will fail if you do not have a local running Redis instance
 ### As an Elastic Beanstalk Application using GitHub
 3. Run `eb init` in the root directory
 4. Run `eb create` to create your EB environment
@@ -76,8 +78,3 @@ Note: To delete your image, run `aws lightsail delete-container-service --servic
 - Functional and Unit Tests
 - Deployment as Container in AWS Lightsail or Docker
 - Creating continuous documentation and deployment on Elastic Beanstalk
-
-### Future/Developing
-- Using Selenium to do end-to-end testing
-- Adding menus for popular stores
-- Adding Icons for fun and personalisation
