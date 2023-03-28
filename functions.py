@@ -1,9 +1,10 @@
 '''Functions Code'''
 from flask import flash
 
+
 def input_validation_check(name, order, session):
     """
-    Validating orders input, to ensure name, 
+    Validating orders input, to ensure name,
     order and session are input and within correct parameters
     """
     try:
@@ -21,6 +22,6 @@ def input_validation_check(name, order, session):
             flash('Session ID is must be 5 digits!', 'danger')
             ret = True
         return ret
-    except Exception as error: # pylint: disable=broad-except
+    except Exception as error:  # pylint: disable=broad-except
         print(error)
         return error

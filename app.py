@@ -86,7 +86,7 @@ def orders():
                 try:
                     for value in order.values():
                         total += float(value[2])
-                except Exception as error: # pylint: disable=broad-except
+                except Exception as error:  # pylint: disable=broad-except
                     print(error)
                     flash(
                         'No total price due to invalid or None price input! (This is not an error)',
@@ -113,7 +113,7 @@ def export():
 
         # Convert the DataFrame to an Excel file in memory
         output = io.BytesIO()
-        with pd.ExcelWriter(output, engine='xlsxwriter') as writer: # pylint: disable=abstract-class-instantiated
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:  # pylint: disable=abstract-class-instantiated
             data_frame.to_excel(
                 writer,
                 sheet_name="exportdata",
