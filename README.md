@@ -41,6 +41,9 @@ pylint *.py
 pytest 
 ```
 Note: Pytest will result in 3 tests will fail if you do not have a local running Redis instance
+### Locally
+3. Run `flask run`
+
 ### As an Elastic Beanstalk Application using GitHub
 3. Run `eb init` in the root directory
 4. Run `eb create` to create your EB environment
